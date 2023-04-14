@@ -6,8 +6,8 @@ namespace WebApplication1.Controllers
 {
     public class ProducersController : Controller
     {
-        CinemaDBContext ctx;
-        public ProducersController(CinemaDBContext context)
+        CinemaDbContext ctx;
+        public ProducersController(CinemaDbContext context)
         {
             ctx= context;
         }
