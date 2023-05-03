@@ -16,6 +16,20 @@ namespace WebApplication1.Controllers
         {
             return View(ctx.Producers.ToList());
         }
+        public ActionResult ProdsAndTheirMovies()
+        {
+            var movies = ctx.Movies.ToList();
+            return View(ctx.Producers.ToList());
+        }
+
+        public IActionResult MyMovies(int id)
+        {
+            var prods = ctx.Producers.ToList();
+            var movies = ctx.Movies.ToList();
+            var res = from m in movies where m.ProducerId == id select m;
+            var res2 = ctx.Movies.Where(m => m.ProducerId == id);
+            return View(res2.ToList());
+        }
 
         // GET: ProducersController/Details/5
         public ActionResult Details(int id)

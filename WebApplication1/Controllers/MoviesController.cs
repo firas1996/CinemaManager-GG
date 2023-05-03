@@ -5,7 +5,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using WebApplication1.Models.Cinema;
+using WebApplication1.Models.ViewModels;
 
 namespace WebApplication1.Controllers
 {
@@ -23,6 +25,38 @@ namespace WebApplication1.Controllers
         {
             var cinemaDbContext = _context.Movies.Include(m => m.Producer);
             return View(await cinemaDbContext.ToListAsync());
+        }
+        public async Task<IActionResult> MoviesAndTheirProds()
+        {
+            var cinemaDbContext = _context.Movies.Include(m => m.Producer);
+            return View(await cinemaDbContext.ToListAsync());
+        }
+
+        public IActionResult MoviesAndTheirProds_UsingModel()
+        {
+            var movies =_context.Movies.ToList();
+            var prods =_context.Producers.ToList();
+            var querry_res = from m in movies
+            join p in prods on m.ProducerId equals p.Id
+            select new ProdMovie
+            {
+                mTitle = m.Title,
+                mGenre = m.Genre,
+                pName = p.Name,
+                pNat = p.Nationality
+            };
+            return View(querry_res);
+        }
+
+        public IActionResult SearchByTitle(string s)
+        {
+            var movies = _context.Movies.ToList();
+            var prods = _context.Producers.ToList();
+            if(s.IsNullOrEmpty())
+                return View(movies);
+            
+            var res2 = _context.Movies.Where(m => m.Title.Contains(s));
+            return View(res2.ToList());
         }
 
         // GET: Movies/Details/5
